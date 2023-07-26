@@ -1,91 +1,166 @@
 import React, { useState } from 'react';
-import { useNavigate,Link} from "react-router-dom";
-import "./Logina.css";
+import { connect } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { setEmail, setPass, setName } from './loginaction';
+import './Logina.css';
+import axios from 'axios';
 
-function Logins() {
-  // React States
-  const [errorMessages, setErrorMessages] = useState({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
+const styles = {
+  container: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    fontFamily: 'Chela One',
+  },
+  login: {
+    width: '400px',
+    padding: '40px',
+    border: '2px solid black',
+    borderRadius: '4px',
+    backgroundColor: '#F7F7F7',
+  },
+  title: {
+    textAlign: 'center',
+    marginBottom: '20px',
+    fontSize: '24px',
+    fontWeight: 'bold',
+    color: '#333',
+    textTransform: 'uppercase',
+  },
+  formGroup: {
+    marginBottom: '20px',
+  },
+  label: {
+    display: 'block',
+    marginBottom: '5px',
+    fontSize: '16px',
+    fontWeight: 'bold',
+  },
+  input: {
+    width: '100%',
+    padding: '10px',
+    fontSize: '16px',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+  },
+  button: {
+    width: '30%',
+    padding: '10px',
+    fontSize: '16px',
+    backgroundColor: '#33bbff',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    marginLeft:'140px',
+  },
+  registerLink: {
+    display: 'block',
+    marginTop: '10px',
+    textAlign: 'center',
+    textDecoration: 'none',
+    color: '#333',
+  },
+};
 
-  // User Login info
-  const database = [
-    {
-      advisorname: "advisor1",
-      password: "pass1"
-    },
-    {
-      advisorname: "advisor2",
-      password: "pass2"
+
+function Login({
+  email,
+  pass,
+  name,
+  setEmail,
+  setName,
+  setPass,
+}) {
+  const check = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:8181/api/v1/auth/authenticate",
+        {
+          
+          email: email,
+          password: pass,
+        }
+      );
+
+      console.log(response.data);
+      localStorage.setItem('token', response.data.token);
+      console.log(localStorage.getItem('token'));
+
+      window.alert("Successfully Logged In");
+
+      
+
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+      window.alert("Invalid Credentials");
     }
-  ];
-
-  const errors = {
-    uname: "invalid advisorname",
-    pass: "invalid password"
   };
 
-  const handleSubmit = (event) => {
-    //Prevent page reload
-    event.preventDefault();
-
-    var { uname, pass } = document.forms[0];
-
-    // Find user login info
-    const userData = database.find((user) => user.advisorname === uname.value);
-
-    // Compare user info
-    if (userData) {
-      if (userData.password !== pass.value) {
-        // Invalid password
-        setErrorMessages({ name: "pass", message: errors.pass });
-      } else {
-        setIsSubmitted(true);
-      }
-    } else {
-      // Username not found
-      setErrorMessages({ name: "uname", message: errors.uname });
-    }
-  };
-
-  // Generate JSX code for error message
-  const renderErrorMessage = (name) =>
-    name === errorMessages.name && (
-      <div className="error">{errorMessages.message}</div>
-    );
-
-  // JSX code for login form
-  const renderForm = (
-    <div className="form">
-      <form onSubmit={handleSubmit}>
-        <div className="input-container1">
-          <label>Advisorname </label>
-          <input type="text" name="uname" required />
-          {renderErrorMessage("uname")}
-        </div>
-        <div className="input-container1">
-          <label>Password </label>
-          <input type="password" name="pass" required />
-          {renderErrorMessage("pass")}
-        </div>
-        <div className="button-container">
-          <input type="submit" />
-        </div>
-        <div className="register">
-            <Link to="/registers">Register</Link>
-        </div>
-      </form>
-    </div>
-  );
+  const navigate = useNavigate();
+  const [checkpass, setCheckPass] = useState(false);
 
   return (
-    <div className="login">
-      <div className="login-form">
-        <center>
-        <div className="title">SIGN IN</div></center>
-        {isSubmitted ? <div><center><div>Advisor is successfully logged in</div><br/><Link to ="/">Move to Home Page</Link></center> </div>: renderForm}
+    <div className='loginAdv'>
+    <div style={styles.container}>
+      <div style={styles.login}>
+        <form onSubmit={check}>
+          <h2 style={styles.title}>Login</h2>
+         
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Email:</label>
+            <input
+              style={styles.input}
+              type="email"
+              name="email"
+              value={email}
+              placeholder="Enter your email"
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Password:</label>
+            <input
+              style={styles.input}
+              type="password"
+              name="pass"
+              value={pass}
+              onChange={(e) => setPass(e.target.value)}
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+          <Link to='/o'><button style={styles.button} type="submit">
+            Login
+          </button></Link>
+          {checkpass && alert('Successful login ' + name)}
+          {checkpass && navigate('/home')}
+          <Link to="/Signups" style={styles.registerLink}>
+            Don't have an account? Register
+          </Link>
+        </form>
       </div>
+    </div>
     </div>
   );
 }
 
-export default Logins;
+const mapStateToProps = (state) => {
+  return {
+    email: state.login.email,
+    pass: state.login.pass,
+    name: state.login.name,
+  };
+};
+
+const mapDispatchToProps = {
+  setEmail,
+  setPass,
+  setName,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

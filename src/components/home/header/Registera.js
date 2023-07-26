@@ -1,143 +1,186 @@
-import React,{useState} from 'react'
-import './Registration.css'
-import { Link } from "react-router-dom";
+import React, { useState } from 'react';
+import './Registera.css'
 import axios from 'axios';
-function Signups() {
-    const [formValues,setFormValues]=useState("");
-    const [formErrors,setFormErrors]=useState({});
-    const [isSubmit,setIsSubmit]=useState(false);
-    const [username, setUserName]=useState(' ');
-    const [Name, setName]=useState(' ');
-    const [Ph_no, setPh_no]=useState(' ');
-    const [email, setEmail]=useState(' ');
-    const [password, setPassword]=useState(' ');
-    const [gender, setGender]=useState(' ');
-    const [skype, setSkype]=useState(' ');
-    
 
-    const handleChange=(event)=>{
-        const{id,value}=event.target;
-        setFormValues({...formValues,[id]:value});
-        console.log(formValues);
-    }
-    
-    const handleSubmit=(event)=>{
-        event.preventDefault();
-        setFormErrors(validate(formValues));
-        const data = {
-            username:username,
-            Name:Name,
-            Ph_no:Ph_no,
-            email:email ,
-            password:password,
-        }
-        axios.post("http://127.0.0.1:8080/post",data);
-        console.log(data);
-        if(formErrors.check === true){
-            setIsSubmit(true);
-        }
-        else{
-            setIsSubmit(false);
-        }
-    }
-    const validate=(values)=>{
-        const errors={};
-        const reg=new RegExp("[0-9]")
-        const preg=new RegExp("[A-Z][A-za-z0-9$_]+") 
-        errors.check= true;
-        if(!values.username)
-        errors.username="Please Fill the column";
-        else if(values.username.length<5){
-            errors.check= false;
-            errors.username="Username must have minimum 5 characters";
-        }
-        else if(reg.test(values.username)){
-            errors.username="Username must contain only alphabets";
-        }
-        if(!values.email){
-        errors.check= false;
-        errors.email="Please Fill the email";
-    }
-    
-    if(!values.password){
-        errors.check= false;
-        errors.password="Please Fill the password";
-    }
-    else if(values.password.length<5){
-        errors.check= false;
-        errors.password="Password is Weak";
-    }
-        return errors;
-    }
-const renderSignup = 
-(
-    <div className='form'>
-        <form onSubmit={handleSubmit}> 
-        <div className='input-container1'>
-                    <label>Advisorname</label>
-                    <input type="text" id='advisorname' placeholder='Create your Advisorname' value={formValues.username}
-                       onChange={(e) => setUserName(e.target.value)} required/>
-                </div>
-                <p  style={{color:"red", fontWeight: "bold"}}>{formErrors.username}</p>
-        <div className='input-container1'>
-                    <label>Name</label>
-                    <input type="text" id='Name' placeholder='Enter your Name' value={formValues.Name}
-                        onChange={(e) => setName(e.target.value)}required/>
-                </div>
-                <p  style={{color:"red", fontWeight: "bold"}}>{formErrors.username}</p>
-                <div className='input-container1'>
-                    <label>Ph_no</label>
-                    <input type="text" id='Ph_no' placeholder='Enter your Ph_no' value={formValues.Ph_no}
-                        onChange={(e) => setPh_no(e.target.value)} required/>
-                </div>
-                <p  style={{color:"red", fontWeight: "bold"}}>{formErrors.username}</p>
-                
+import { Link, useNavigate } from 'react-router-dom';
 
-                <div className='input-container1'>
-                    <label>Email</label>
-                    <input type="email" id='email'placeholder='Enter your Email' value={formValues.email}
-                        onChange={(e) => setEmail(e.target.value)} required/>
-                </div>
-                <p  style={{color:"red", fontWeight: "bold"}}>{formErrors.email}</p>
+const Signups = () => {
+  const styles = {
+    container: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100vh',
+      fontFamily: 'Chela One',
+    },
+    title: {
+      textAlign: 'center',
+      marginBottom: '20px',
+      fontSize: '24px',
+      fontWeight: 'bold',
+      color: '#333',
+      textTransform: 'uppercase',
+      fontFamily: 'Verdana, sans-serif',
+    },
+    form: {
+      display: 'flex',
+      flexDirection: 'column',
+      width: '600px',
+      padding: '20px',
+      border: '2px solid black',
+      borderRadius: '4px',
+    },
+    inputContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      marginBottom: '20px',
+    },
+    label: {
+      marginBottom: '5px',
+      fontSize: '16px',
+    },
+    input: {
+      padding: '10px',
+      fontSize: '16px',
+    },
+    button: {
+      padding: '10px',
+      fontSize: '16px',
+      backgroundColor: '#33bbff',
+      color: 'white',
+      border: 'none',
+      cursor: 'pointer',
+      width: '90px',
+      marginLeft: '30px',
+    },
+    error: {
+      color: 'red',
+      marginBottom: '10px',
+      fontSize: '14px',
+      textAlign: 'center',
+      fontStyle: 'italic',
+      fontWeight: 'bold',
+      backgroundColor: '#FBE3E4',
+      padding: '8px',
+      borderRadius: '4px',
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+    },
+  };
 
-                <div className='input-container1'>
-                    <label>Gender</label>
-                    <input type="gender" id='gender'placeholder='Enter your gender' value={formValues.gender}
-                        onChange={(e) => setGender(e.target.value)} required/>
-                </div>
-                <p  style={{color:"red", fontWeight: "bold"}}>{formErrors.gender}</p>
+  const [name, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-                <div className='input-container1'>
-                    <label>Skype-Id</label>
-                    <input type="skypeId" id='skpyeId'placeholder='Enter your skypeId' value={formValues.skypeId}
-                        onChange={(e) => setSkype(e.target.value)} required/>
-                </div>
-                <p  style={{color:"red", fontWeight: "bold"}}>{formErrors.skypeId}</p>
+  const [error, setError] = useState('');
+  const [isSubmit, setIsSubmit] = useState(false);
+  const navigate = useNavigate('');
 
-                <div className='input-container1'>
-                    <label>Password</label>
-                    <input type="password" id='password' placeholder='Create a Password' value={formValues.password}
-                        onChange={(e) => setPassword(e.target.value)}required/>
-                </div>
-                <p  style={{color:"red", fontWeight: "bold"}}>{formErrors.password}</p>
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-                <div className='button-container'>
-                  <input type='submit'/>
-                </div>
-                <div className="register">
-            <Link to="/">Already have an Account..?</Link>
+    setIsSubmit(true);
+
+    // Check if the passwords match
+    if (password !== confirmPassword) {
+      window.alert('Passwords do not match');
+      setIsSubmit(false);
+      return;
+    }
+
+    // Validate the email format using a regular expression
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.match(emailRegex)) {
+      setError('Invalid email address');
+      setIsSubmit(false);
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://localhost:8181/api/v1/auth/register', {
+        "name": name,
+        "email": email,
+        "password": password,
+      });
+
+      console.log(response.status);
+      if (response.status === 200) {
+        setUsername('');
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
+        setError(''); // Clear any previous error messages
+        navigate('/Login');
+      }
+    } catch (error) {
+      alert("Error");
+      setIsSubmit(false);
+    }
+  };
+
+  return (
+    <div className='raimage'>
+    <div style={styles.container}>
+      <form style={styles.form} onSubmit={handleSubmit}>
+        <h2 style={styles.title}>Signup</h2>
+        {error && <div style={styles.error}>{error}</div>}
+        <div style={styles.inputContainer}>
+          <label style={styles.label}>First Name:</label>
+          <input
+            style={styles.input}
+            type="text"
+            placeholder="Enter your name"
+            value={name}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
         </div>
-        </form>
-    </div>
-  );
-  return(
-    <div className="login">
-    <div className="login-form">   <center>
-                <div className='title'>REGISTER</div></center>  
-        {isSubmit ? <div style={{color: "white"}}>User is successfully logged in</div> : renderSignup}
-    </div>
-  </div>
-  );
-}
 
-export default Signups
+        <div style={styles.inputContainer}>
+          <label style={styles.label}>Email:</label>
+          <input
+            style={styles.input}
+            type="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div style={styles.inputContainer}>
+          <label style={styles.label}>Password:</label>
+          <input
+            style={styles.input}
+            type="password"
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <div style={styles.inputContainer}>
+          <label style={styles.label}>Confirm Password:</label>
+          <input
+            style={styles.input}
+            type="password"
+            placeholder="Confirm your password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <Link to='/signins'><button style={styles.button} type="submit">
+            Sign Up
+          </button></Link>
+        </div>
+        <p>
+          Already have an account? <Link to="/Login">Login</Link>
+        </p>
+      </form>
+    </div>
+    </div>
+  );
+};
+
+export default Signups;

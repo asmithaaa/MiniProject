@@ -1,0 +1,4 @@
+com/example/demo/model/User$UserBuilder.class
+com/example/demo/request/RegisterRequest$RegisterRequestBuilder.class
+com/example/demo/response/AuthenticationResponse$AuthenticationResponseBuilder.class
+com/example/demo/request/AuthenticationRequest$AuthenticationRequestBuilder.class

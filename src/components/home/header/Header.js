@@ -26,6 +26,7 @@ const Header =()=>
                         <li><Link to='/streams'>Streams</Link></li>
                         <li><Link to='/services'>Services</Link></li>
                         <li><Link to='/membership'>Membership</Link></li>
+                        <li><Link to='/feedform'>FeedForm</Link></li>
                         <li className='icon'>
                             <ImageSearchRoundedIcon className='HeaderIcon'/>
                         </li>

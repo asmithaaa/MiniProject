@@ -11,12 +11,17 @@ import About from './components/home/about/About';
 import Service from './components/home/about/Service';
 import Pricing from './components/home/header/Pricing';
 import ContactUs from './components/pageContent/ContactUs';
+import { Provider } from 'react-redux';
+import store from './components/home/header/store';
+import Home from './components/home/homes/Home';
+import FeedForm from './components/home/about/FeedForm';
+
 
 
 
 function App() {
   return (
-    <div>
+      <Provider store={store}>
       <Header/>
     <Routes>
       <Route path='/' element={<HomePages/>}/>
@@ -27,9 +32,15 @@ function App() {
       <Route path='/streams' element={<About/>}/>
       <Route path='/services' element={<ContactUs/>}/>
       <Route path='/membership' element={<Pricing/>}/>
+      <Route path='/Signup' element={<Signup/>}/>
+      <Route path='/Signups' element={<Signups/>}/>
+      <Route path='/Login' element={<HomePages/>}/>
+      <Route path='/signins' element={<Login/>}/>
+      <Route path='/o' element={<Home/>}/>
+      <Route path='/feedform' element={<FeedForm/>}/>
 
     </Routes>
-    </div>
+    </Provider>
   );
 }
 
